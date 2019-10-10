@@ -1,0 +1,2 @@
+mmv adeptio\* bitcoin\#1
+sed -i 's@adeptio@bitcoin@g' *
