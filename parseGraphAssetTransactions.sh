@@ -74,6 +74,8 @@ if [ $? -eq 0 ]; then
                         formatThisDayRevA="$(echo $ThisDayRevA | sed 's@0@@g')"
                         formatNextDayRevA="$(echo $NextDayRevA | sed 's@0@@g')"
 
+                        # Make sure that is more than midnight 
+                        unixTime=$(echo "$unixTime + 600" | bc)
 
                         # Check if it's next day or not?
                         if [[ $formatThisDayRevA -eq $formatNextDayRevA ]]; then
