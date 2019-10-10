@@ -83,7 +83,7 @@ for (( ; ; ))
 	fi
 
         # Search for USD price
-        searchingForPrice=$(mongo --host $mongoHost --port $mongoPort --eval "db.blocks.find({\"time\" : $lastProgressInDB1}, {difficulty:1, _id:0}).limit(1)" --quiet $database | jq '.difficulty')
+        searchingForPrice=$(mongo --host $mongoHost --port $mongoPort --eval "db.blocks.find({\"time\" : $lastProgressInDB1}, {difficulty:1, _id:0}).limit(1)" --quiet $database | grep -o '[0-9]*')
 
                                 # Format JSON
                                 sed -i '$ d' $formatingFile
