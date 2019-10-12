@@ -29,8 +29,8 @@ function checkLastBlockInDB() {
 	mongo --host $mongoHost --port $mongoPort --eval 'db.blocks.find({}, {block:1, _id:0}).limit(1).sort({$natural: -1}).limit(1);' --quiet $database | grep -o '[0-9]*'
 }
 
-function askRPCblockHash() {
-	curl -s ${chainProvider}/api/getblock?hash\=${1} > $dataFileBlocks
+function askChainProviderblockHash() {
+	curl -s ${chainProvider}/api/getblock?hash\=${1} | jq '' > $dataFileBlocks
 }
 
 function insertBlockNumInTMPfile() {
@@ -107,7 +107,7 @@ for (( i=${lastBlockInDB}; i<=${syncXBlocks}; i++ ))
         if [ $? -eq 0 ]; then
 
                 # Send blockhash to chainProvider // Get FULL block data // write data to TMP file
-                askRPCblockHash "${getBlockHash}"
+                askChainProviderblockHash "${getBlockHash}"
                 
                 # Insert block number in TMP file
                 insertBlockNumInTMPfile "${lastBlockInDB}"
