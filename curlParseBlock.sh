@@ -14,14 +14,16 @@ function databaseAlive() {
 }
 
 function getHash() {
-	curl -s ${chainProvider}/api/getblockhash?index\=${1}
-        if [[ $? = 1 ]]; then
+	curl -s ${chainProvider}/api/getblockhash?index\=${1} | tee -a /tmp/${genesisBlock}.txt
+    cat /tmp/${genesisBlock}.txt | grep "error"
+        if [[ $? = 0 ]]; then
             echo ""
             echo "$setDateStamp Up-to-date. No new blocks found. Last checked block was: $lastBlockInDB."
             echo ""
             exit 0
+            rm -fr /tmp/${genesisBlock}.txt
         else
-            echo "" > /dev/null
+            rm -fr /tmp/${genesisBlock}.txt
         fi
 }
 
