@@ -37,6 +37,7 @@ function askChainProviderblockHash() {
         exit 1
     else
         echo "" > /dev/null
+    fi
 }
 
 function insertBlockNumInTMPfile() {
