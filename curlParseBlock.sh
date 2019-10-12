@@ -35,7 +35,7 @@ function askChainProviderblockHash() {
     cat $dataFileBlocks | grep "block" > /dev/null
     if [[ $? = 1 ]]; then
         echo ""
-        echo "$setDateStamp ${chainProvider} Up-to-date. No new blocks found?. Last checked block was: $lastBlockInDB."
+        echo "$setDateStamp Up-to-date. No new blocks found? Last checked block was: $lastBlockInDB."
         echo ""
         exit 0
     else
