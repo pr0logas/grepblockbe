@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -x
-
 # Set Functions;
 function databaseAlive() {
 	mongo --host $mongoHost --port $mongoPort --eval 'db.getMongo().getDBNames()' --quiet $database > /dev/null
