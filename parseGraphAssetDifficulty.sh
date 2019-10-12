@@ -75,7 +75,7 @@ for (( ; ; ))
 
 	if [ -z "$lastProgressInDB1" ]; then
 		setTimeStamp
-      		echo "$setDateStamp No new info on database. Sleeping..."
+      		echo "$setDateStamp No new info on database. We at $ConvertUnixTime. Sleeping..."
 		echo ""
 		exit 0
 	else
