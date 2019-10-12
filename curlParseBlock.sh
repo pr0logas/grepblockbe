@@ -15,6 +15,14 @@ function databaseAlive() {
 
 function getHash() {
 	curl -s ${chainProvider}/api/getblockhash?index\=${1}
+        if [[ $? = 1 ]]; then
+            echo ""
+            echo "$setDateStamp Up-to-date. No new blocks found. Last checked block was: $lastBlockInDB."
+            echo ""
+            exit 0
+        else
+            echo "" > /dev/null
+        fi
 }
 
 function checkDBstatus() {
