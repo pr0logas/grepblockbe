@@ -30,10 +30,13 @@ function checkLastBlockInDB() {
 }
 
 function askChainProviderblockHash() {
+    setTimeStamp
 	curl -s ${chainProvider}/api/getblock?hash\=${1} | jq '' > $dataFileBlocks
     cat $dataFileBlocks | grep "block" > /dev/null
     if [[ $? = 1 ]]; then
-        echo "ChainProvider limit exceeded?"
+        echo ""
+        echo "$setDateStamp ChainProvider limit exceeded? Last checked block was: $lastBlockInDB"
+        echo ""
         exit 1
     else
         echo "" > /dev/null
