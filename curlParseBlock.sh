@@ -22,6 +22,7 @@ function getHash() {
             echo ""
             echo "$setDateStamp Up-to-date. No new blocks found. Last checked block was: $lastBlockInDB."
             echo ""
+            break
             exit 0
             rm -fr /tmp/${genesisBlock}.txt
         else
