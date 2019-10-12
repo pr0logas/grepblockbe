@@ -35,7 +35,7 @@ function askChainProviderblockHash() {
     cat $dataFileBlocks | grep "block" > /dev/null
     if [[ $? = 1 ]]; then
         echo ""
-        echo "$setDateStamp ChainProvider limit exceeded? Last checked block was: $lastBlockInDB"
+        echo "$setDateStamp ${chainProvider} limit exceeded? Last checked block was: $lastBlockInDB"
         echo ""
         exit 1
     else
@@ -56,7 +56,7 @@ function writeDataToDatabase() {
         	setTimeStamp
             stopCountingProcessTime
         	runtime=$((end-start))                     
-            echo "$setDateStamp Processing block: $lastBlockInDB. Processing took: $runtime ms" 
+            echo "$setDateStamp Processing block from ${chainProvider}: $lastBlockInDB. Processing took: $runtime ms" 
             
         else
             echo "$setDateStamp Process block: $lastBlockInDB FAILED"
