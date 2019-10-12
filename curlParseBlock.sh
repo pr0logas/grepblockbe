@@ -14,18 +14,7 @@ function databaseAlive() {
 }
 
 function getHash() {
-	curl -s ${chainProvider}/api/getblockhash?index\=${1} | tee -a /tmp/${genesisBlock}.txt
-    cat /tmp/${genesisBlock}.txt | grep "error"
-        if [[ $? = 0 ]]; then
-            echo ""
-            echo "$setDateStamp Up-to-date. No new blocks found. Last checked block was: $lastBlockInDB."
-            echo ""
-            break
-            exit 0
-            rm -fr /tmp/${genesisBlock}.txt
-        else
-            rm -fr /tmp/${genesisBlock}.txt
-        fi
+	curl -s ${chainProvider}/api/getblockhash?index\=${1} 
 }
 
 function checkDBstatus() {
@@ -46,9 +35,9 @@ function askChainProviderblockHash() {
     cat $dataFileBlocks | grep "block" > /dev/null
     if [[ $? = 1 ]]; then
         echo ""
-        echo "$setDateStamp ${chainProvider} limit exceeded? Last checked block was: $lastBlockInDB"
+        echo "$setDateStamp ${chainProvider} Up-to-date. No new blocks found?. Last checked block was: $lastBlockInDB."
         echo ""
-        exit 1
+        exit 0
     else
         echo "" > /dev/null
     fi
