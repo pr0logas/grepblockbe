@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -x
-
 # Set Functions;
 function databaseAlive() {
 	mongo --host $mongoHost --port $mongoPort --eval 'db.getMongo().getDBNames()' --quiet $database > /dev/null
@@ -33,6 +31,12 @@ function checkLastBlockInDB() {
 
 function askChainProviderblockHash() {
 	curl -s ${chainProvider}/api/getblock?hash\=${1} | jq '' > $dataFileBlocks
+    cat $dataFileBlocks | grep "block" > /dev/null
+    if [[ $? = 1 ]]; then
+        echo "ChainProvider limit exceeded?"
+        exit 1
+    else
+        echo "" > /dev/null
 }
 
 function insertBlockNumInTMPfile() {
