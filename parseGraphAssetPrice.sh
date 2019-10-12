@@ -16,7 +16,7 @@ else
 	setGoodTimeFormatSet=$(echo "$coinGeckoStartUnixTime * 1000" | bc)
         echo "[" >> $formatingFile
         echo "   [" >> $formatingFile
-        echo "${coinGeckoStartUnixTime}" >> $formatingFile
+        echo "${setGoodTimeFormatSet}" >> $formatingFile
         echo $addComma >> $formatingFile
         echo "0" >> $formatingFile
         echo "   ]" >> $formatingFile
@@ -35,6 +35,7 @@ if [[ $? -eq 0 ]]; then
 	echo "DB works" > /dev/null
 else 
 	echo "Database not working?" 
+	exit 1
 fi
 
 # LastProgress (Last actual value)
@@ -51,7 +52,7 @@ for (( ; ; ))
 	# LastProgress Time in DB
 	lastProgressInDB1=$(mongo --host $mongoHost --port $mongoPort --eval "db.historicalPriceData.find({\"unix_time\" : { \$gt: $lastProgress}}).limit(1)" --quiet $database | grep -o -P '."unix_time".{0,16}' | head -1 | grep -o '[0-9]*')
 	# Search for USD price
-	searchingForPrice=$(mongo --host $mongoHost --port $mongoPort --eval "db.historicalPriceData.find({\"unix_time\" : $lastProgressInDB1}, {_id:0}).limit(1)" --quiet $database | jq -r '.market_data.current_price.usd')
+	searchingForPrice=$(mongo --host $mongoHost --port $mongoPort --eval "db.historicalPriceData.find({\"unix_time\" : $lastProgressInDB1}, {_id:0}).limit(1)" --quiet $database | grep -o -P '"usd".{0,50}' | head -1 | sed 's@,.*@@' | grep -o '[0-9,.-.]*')
 
 	if [[ "$lastProgressInDB1" -eq "$lastProgressInDB2" ]]; then
 		echo "No new data on Database, sleeping..."
@@ -69,5 +70,9 @@ for (( ; ; ))
 		
 		# Copy JSON to production
                 scp ${formatingFile} root@${websiteHost}:/usr/share/nginx/grepblockcom/apidata/${assetTicker}/${file}
+		
+		dateProgress=$(date -d @${lastProgressInDB1} +'%Y-%m-%d')
+		setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
+		echo "$setDateStamp Added data to graph: $dateProgress & Price: \$ ${searchingForPrice}"
 	fi
-done
+done	

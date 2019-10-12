@@ -102,6 +102,10 @@ echo $addComma >> $formatingFile
 mongo --host $mongoHost --port $mongoPort --eval 'db.basicInfo.find({ developerFee: { $exists: true}}, {developerFee:1, _id:0});' --quiet $database >> $formatingFile
 echo $addComma >> $formatingFile
 
+#  whitepaper
+mongo --host $mongoHost --port $mongoPort --eval 'db.basicInfo.find({ whitepaper: { $exists: true}}, {whitepaper:1, _id:0});' --quiet $database >> $formatingFile
+echo $addComma >> $formatingFile
+
 # firstBlock
 mongo --host $mongoHost --port $mongoPort --eval 'db.basicInfo.find({ firstBlock: { $exists: true}}, {firstBlock:1, _id:0});' --quiet $database >> $formatingFile
 echo $addComma >> $formatingFile
