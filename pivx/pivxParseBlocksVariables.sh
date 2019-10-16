@@ -4,6 +4,8 @@
 
 parseBlocksInRangeFor=5
 chainProvider="https://mainnet-explorer.pivx.org"
+getBlockHashMethod="/api/getblockhash?index\="
+getBlockwithHashMethod="/api/getblock?hash\="
 
 collectionBlocks=blocks
 dataFileBlocks=/tmp/${database}-parsedBlock.json

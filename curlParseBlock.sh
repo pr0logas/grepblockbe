@@ -14,7 +14,7 @@ function databaseAlive() {
 }
 
 function getHash() {
-	curl -s ${chainProvider}/api/getblockhash?index\=${1} 
+	curl -s ${chainProvider}${getBlockHashMethod}${1} 
 }
 
 function checkDBstatus() {
@@ -31,7 +31,7 @@ function checkLastBlockInDB() {
 
 function askChainProviderblockHash() {
     setTimeStamp
-	curl -s ${chainProvider}/api/getblock?hash\=${1} | jq '' > $dataFileBlocks
+	curl -s ${chainProvider}${getBlockwithHashMethod}${1} | jq '' > $dataFileBlocks
     cat $dataFileBlocks | grep "block" > /dev/null
     if [[ $? = 1 ]]; then
         echo ""

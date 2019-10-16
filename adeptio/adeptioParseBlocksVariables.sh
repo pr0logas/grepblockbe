@@ -2,10 +2,15 @@
 
 . ~/grepblock/adeptio/adeptioDefaults.sh
 
-parseBlocksInRangeFor=199
+parseBlocksInRangeFor=5
+
+chainProvider="https://explorer.adeptio.cc"
+getBlockHashMethod="/api/getblockhash?index\="
+getBlockwithHashMethod="/api/getblock?hash\="
+
 
 collectionBlocks=blocks
 dataFileBlocks=/tmp/${database}-parsedBlock.json
 
 # Start parsing
-source ~/grepblock/parseBlock.sh
+source ~/grepblock/curlParseBlock.sh
