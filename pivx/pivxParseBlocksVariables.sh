@@ -2,11 +2,11 @@
 
 . ~/grepblock/pivx/pivxDefaults.sh
 
-parseBlocksInRangeFor=199
+parseBlocksInRangeFor=5
 chainProvider="https://mainnet-explorer.pivx.org"
 
 collectionBlocks=blocks
 dataFileBlocks=/tmp/${database}-parsedBlock.json
 
 # Start parsing
-source ~/grepblock/parseBlock.sh
+source ~/grepblock/curlParseBlock.sh

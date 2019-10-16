@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -x 
-
 # Check if we have a collection created
 check=$(mongo --host $mongoHost --port $mongoPort --eval 'db.historicalPriceData.find({}, {unix_time:1, _id:0}).sort({$natural: -1}).limit(1);' --quiet $database | jq -r '.unix_time')
         if [[ "$check" < 0 ]] ; then

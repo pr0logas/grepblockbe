@@ -11,7 +11,7 @@ assetTicker="XZC"
 assetName="zcoin"
 genesisBlock=1475020813
 coinGeckoStartUnixTime="1476057600"
-blockTime=120
+blockTime=300
 
 # RPC
 rpcconnect=10.10.100.201

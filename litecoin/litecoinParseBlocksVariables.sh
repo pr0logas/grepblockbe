@@ -2,7 +2,7 @@
 
 . ~/grepblock/litecoin/litecoinDefaults.sh
 
-parseBlocksInRangeFor=199
+parseBlocksInRangeFor=299
 
 collectionBlocks=blocks
 dataFileBlocks=/tmp/${database}-parsedBlock.json
