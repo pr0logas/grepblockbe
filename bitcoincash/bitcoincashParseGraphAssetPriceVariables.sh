@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. ~/grepblock/ontology/ontologyDefaults.sh
+. ~/grepblock/bitcoincash/bitcoincashDefaults.sh
 
 # File names
 file="assetPrice.json"

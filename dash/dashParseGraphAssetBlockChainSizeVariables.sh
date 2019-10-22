@@ -2,9 +2,8 @@
 
 . ~/grepblock/dash/dashDefaults.sh
 
-# File names
-file="assetVolume.json"
-formatingFile="./JSON/assetVolume.json"
+file="assetBlockchainSize.json"
+formatingFile="./JSON/assetBlockchainSize.json"
 
 # Misc
 addComma=","
@@ -13,9 +12,5 @@ addBracketsEnd="]"
 addCurlyBracketsEnd="}"
 addCurlyBracketsStart="{"
 
-
-apiProvider="api.coingecko.com"
-unixTime=$(date +%s)
-
 # Start parsing
-source ~/grepblock/parseGraphAssetVolumeQuick.sh
+source ~/grepblock/parseGraphAssetBlockchainSize.sh

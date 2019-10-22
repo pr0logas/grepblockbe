@@ -2,7 +2,7 @@
 
 . ~/grepblock/adeptio/adeptioDefaults.sh
 
-parseBlocksInRangeFor=5
+parseBlocksInRangeFor=199
 
 chainProvider="https://explorer.adeptio.cc"
 getBlockHashMethod="/api/getblockhash?index\="

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-. ~/grepblock/ontology/ontologyDefaults.sh
+. ~/grepblock/bitcoincash/bitcoincashDefaults.sh
 
 # File names
-file="assetPrice.json"
-formatingFile="./JSON/assetPrice.json"
+file="assetVolume.json"
+formatingFile="./JSON/assetVolume.json"
 
 # Misc
 addComma=","
@@ -18,4 +18,4 @@ apiProvider="api.coingecko.com"
 unixTime=$(date +%s)
 
 # Start parsing
-source ~/grepblock/parseGraphAssetPriceQuick.sh
+source ~/grepblock/parseGraphAssetVolumeQuick.sh

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-. ~/grepblock/litecoin/litecoinDefaults.sh
+. ~/grepblock/bitcoincash/bitcoincashDefaults.sh
 
-parseBlocksInRangeFor=999
+parseBlocksInRangeFor=199
 
 collectionBlocks=blocks
 dataFileBlocks=/tmp/${database}-parsedBlock.json

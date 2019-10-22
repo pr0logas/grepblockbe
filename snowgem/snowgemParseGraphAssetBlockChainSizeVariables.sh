@@ -2,9 +2,8 @@
 
 . ~/grepblock/snowgem/snowgemDefaults.sh
 
-# File names
-file="assetMarketCap.json"
-formatingFile="./JSON/assetMarketCap.json"
+file="assetBlockchainSize.json"
+formatingFile="./JSON/assetBlockchainSize.json"
 
 # Misc
 addComma=","
@@ -13,9 +12,5 @@ addBracketsEnd="]"
 addCurlyBracketsEnd="}"
 addCurlyBracketsStart="{"
 
-
-apiProvider="api.coingecko.com"
-unixTime=$(date +%s)
-
 # Start parsing
-source ~/grepblock/parseGraphAssetMarketCapQuick.sh
+source ~/grepblock/parseGraphAssetBlockchainSize.sh

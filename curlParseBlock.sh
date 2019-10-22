@@ -14,7 +14,7 @@ function databaseAlive() {
 }
 
 function getHash() {
-	curl -s ${chainProvider}${getBlockHashMethod}${1} 
+	curl -m 10 -s ${chainProvider}${getBlockHashMethod}${1} 
 }
 
 function checkDBstatus() {
@@ -31,7 +31,7 @@ function checkLastBlockInDB() {
 
 function askChainProviderblockHash() {
     setTimeStamp
-	curl -s ${chainProvider}${getBlockwithHashMethod}${1} | jq '' > $dataFileBlocks
+	curl -m 10 -s ${chainProvider}${getBlockwithHashMethod}${1} | jq '' > $dataFileBlocks
     cat $dataFileBlocks | grep "block" > /dev/null
     if [[ $? = 1 ]]; then
         echo ""
@@ -126,7 +126,7 @@ for (( i=${lastBlockInDB}; i<=${syncXBlocks}; i++ ))
                 writeDataToDatabase
 
         elif [ $? -eq 1 ]; then
-     			
+     	        lastBlockInDB="e16bb7074de492fde75ea2e38ef5d08268595881a048f878dcb27eff7417a553"
                 getHash "${lastBlockInDB}"
                 	
                     if [ $? -ne 8 ]; then
