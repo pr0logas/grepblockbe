@@ -40,7 +40,7 @@ echo $keepValues | grep "market_data" > /dev/null
 
                                         if [ $? -eq 0 ]; then
                                         	setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
-                                        	echo "${setDateStamp} SUCCESS historical price data of $NEXT_DATE flushed to database" 
+                                        	echo "${setDateStamp} SUCCESS historical price data of $NEXT_DATE flushed to database $database" 
                                             
                                         else
                                         

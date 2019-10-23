@@ -18,7 +18,7 @@ mongoimport --host $mongoHost --port $mongoPort --db $database --collection $col
 setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
 
         if [ $? -eq 0 ]; then
-                echo "${setDateStamp} SUCCESS price data --USD-- flushed to database" 
+                echo "${setDateStamp} SUCCESS price data --USD-- flushed to database $database" 
         else
                 echo "${setDateStamp} FAILED to flush price data --USD-- to database - ERROR"
                 exit 1
@@ -42,7 +42,7 @@ mongoimport --host $mongoHost --port $mongoPort --db $database --collection $col
 setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
 
         if [ $? -eq 0 ]; then
-                echo "$setDateStamp SUCCESS price data --BTC-- flushed to database" 
+                echo "$setDateStamp SUCCESS price data --BTC-- flushed to database $database" 
         else
                 echo "$setDateStamp FAILED to flush price data --BTC-- to database - ERROR"
                 exit 1
