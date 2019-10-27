@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 
-. ~/grepblock/litecoin/litecoinDefaults.sh
+. ~/grepblock/zcash/zcashDefaults.sh
 
-parseBlocksInRangeFor=99
+parseBlocksInRangeFor=19
 
-chainProvider="https://insight.litecore.io"
+chainProvider="https://zcashnetwork.info"
 getBlockHashMethod="api/block-index/"
 getBlockwithHashMethod="/api/block/"
+
 
 collectionBlocks=blocks
 dataFileBlocks=/tmp/${database}-parsedBlock.json
 
 # Start parsing
-source ~/grepblock/parseBlock.sh
+source ~/grepblock/curlInsightParseBlock.sh

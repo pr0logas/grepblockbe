@@ -44,17 +44,18 @@ for (( ; ; ))
 
                             setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
 
-                            mongoimport --host $mongoHost --port $mongoPort --db $database --collection $collectionWallets --file $dataFileWallets3 --mode upsert --upsertFields wallet --quiet
+                            mongoimport --host $mongoHost --port $mongoPort --db $database --collection $collectionWallets --file $dataFileWallets3 --mode upsert --upsertFields wallet --quiet &> /dev/null
 
                             # Check if no ERROR occured
                             if [ $? -eq 0 ]; then
                                     echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased & wallet: $y"
 
                                     # Increase finished block in MongoDB
-                                    mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $checkLastProgressIncreased}});" $database --quiet
+                                    mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $checkLastProgressIncreased}});" $database --quiet &> /dev/null
 
                             else
-                                    echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased FAILED" 
+                                    echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased FAILED"
+				    exit 1
                             fi
                         done
 
