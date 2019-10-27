@@ -1,69 +1,143 @@
 #!/usr/bin/env bash
 
-# Check if we have a collection created
-check=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database | jq -r '.lastblock')
-        if [[ $check < 0 ]] ; then
-                mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.insert({"lastblock" : 0});' --quiet $database
+# Set Functions;
+function databaseAlive() {
+        mongo --host $mongoHost --port $mongoPort --eval 'db.getMongo().getDBNames()' --quiet $database > /dev/null
+        if [ $? = 0 ]; then
+            echo "Database working, OK" > /dev/null
         else
-                echo "ALL good"
+                echo ""
+                echo "FATAL! Database not working?"
+            echo ""
+            exit 1
         fi
+}
 
-# :: Starting infinte loop to sync up to date ::
-for (( ; ; ))
+function getHash() {
+        $daemonCli -rpcconnect=$rpcconnect -rpcport=$rpcport -rpcuser=$rpcuser -rpcpassword=$rpcpassword getblockhash $1
+
+}
+
+function checkDBstatus() {
+        mongo --host $mongoHost --port $mongoPort --eval 'db.blocks.find({}, {block:1, _id:0}).sort({$natural: -1}).limit(1);' --quiet $database | grep -o '[0-9]*'
+}
+
+function insertZeroBlock() {
+        mongo --host $mongoHost --port $mongoPort --eval 'db.blocks.insert({"block" : 0});' --quiet $database
+}
+
+function checkLastBlockInDB() {
+        mongo --host $mongoHost --port $mongoPort --eval 'db.blocks.find({}, {block:1, _id:0}).limit(1).sort({$natural: -1}).limit(1);' --quiet $database | grep -o '[0-9]*'
+}
+
+function askRPCblockHash() {
+        $daemonCli -rpcconnect=$rpcconnect -rpcport=$rpcport -rpcuser=$rpcuser -rpcpassword=$rpcpassword getblock $1 > $dataFileBlocks
+}
+
+function insertBlockNumInTMPfile() {
+        sed -i "2i\ \ \"block\": $1\," $dataFileBlocks
+}
+
+function writeDataToDatabase() {
+        mongoimport --host $mongoHost --port $mongoPort --db $database --collection $collectionBlocks --file $dataFileBlocks --mode upsert --upsertFields block --quiet
+
+        # Check if no ERROR occured
+        if [ $? -eq 0 ]; then
+
+                setTimeStamp
+            stopCountingProcessTime
+                runtime=$((end-start))
+            echo "$setDateStamp Processing block: $lastBlockInDB. Processing took: $runtime ms" 
+
+        else
+            echo "$setDateStamp Process block: $lastBlockInDB FAILED"
+            exit 1
+        fi
+}
+
+function setTimeStamp() {
+        setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
+}
+
+function startCountingProcessTime() {
+        start=$(($(date +%s%N)/1000000))
+}
+
+function stopCountingProcessTime() {
+        end=$(($(date +%s%N)/1000000))
+}
+
+# PreCheck does DB works?
+databaseAlive
+
+# PreStart check if we have a collection created in MongoDB?
+check=$(checkDBstatus)
+        if [[ "$check" < 0 ]] ; then
+                insertZeroBlock
+        echo "No data in database. Warning! Starting from zero..."
+
+    else
+        echo "Found data in database. All Good. Continuing progress and appending only new data..."
+
+    fi
+
+# Check last block in MongoDB
+lastBlockInDB=$(checkLastBlockInDB)
+
+# Sync blocks in range for +?
+syncXBlocks=$(($lastBlockInDB+${parseBlocksInRangeFor}))
+
+# Start for loop from last block in DB
+for (( i=${lastBlockInDB}; i<=${syncXBlocks}; i++ ))
+
         do
 
-        checkLastProgress=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database | jq -r '.lastblock')
+        # Database alive?
+        databaseAlive
 
-        checkLastProgressIncreased=$(($checkLastProgress+1))
+        # Start counting processing time
+        startCountingProcessTime
 
-        # Search TXids in required block
-        mongo --host $mongoHost --port $mongoPort --eval "db.blocks.find({\"block\" : $checkLastProgressIncreased}, {tx:1, _id:0});" --quiet $database | jq -r '.tx' | jq '.[]' > $dataFileWallets
+        # Increase block number by + 1 in order to continue progress.
+        lastBlockInDB=$(($lastBlockInDB+1))
 
-        sed -i 's@"@@g' $dataFileWallets
+        # Get block hash value from daemon RPC
+        getBlockHash=$(getHash "${lastBlockInDB}")
 
-        IFS=$'\n'
-        for i in $(cat $dataFileWallets)
-                do
-                        # Get txid data from RPC
-                        $daemonCli -rpcconnect=$rpcconnect -rpcport=$rpcport -rpcuser=$rpcuser -rpcpassword=$rpcpassword getrawtransaction $i 1 > $dataFileWallets2
+        # Check if RPC responded with hash value // 0 - OK // 8 - No new blocks // Other - ERROR
+        if [ $? -eq 0 ]; then
 
-                # Check if RPC responded with hash value // 0 - OK // 5 - No new txids // Other - ERROR
-                if [ $? -eq 0 ]; then
+                # Send blockhash to RPC // Get FULL block data // write data to TMP file
+                askRPCblockHash "${getBlockHash}"
 
-                        IFS=$'\n'
-                        for y in $(cat $dataFileWallets2 | awk '/addresses/,/]/' | sed 's@"addresses":@@'g | sed 's@\[@@g' | sed 's@]@@g' | sed 's@}@@g'| sed 's@{@@g' | sed 's@,@@g' | sed 's@"@@g' | sed "s@ @@g" | sed '/^\s*$/d')
-                            do
+                # Insert block number in TMP file
+                insertBlockNumInTMPfile "${lastBlockInDB}"
 
-                            walletTime=$(cat $dataFileWallets2 | grep blocktime | grep -o '[0-9]*')
+                # Writing block data to MongoDB
+                writeDataToDatabase
 
-                            echo "{" > $dataFileWallets3
-                            echo "\"block\" : ${checkLastProgressIncreased}," >> $dataFileWallets3
-                            echo "\"walletTime\" : ${walletTime}," >> $dataFileWallets3
-                            echo "\"wallet\" : \"$y\"" >> $dataFileWallets3
-                            echo "}" >> $dataFileWallets3
+        elif [ $? -eq 1 ]; then
 
-                            setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
+                getHash "${lastBlockInDB}"
 
-                            mongoimport --host $mongoHost --port $mongoPort --db $database --collection $collectionWallets --file $dataFileWallets3 --mode upsert --upsertFields wallet --quiet
+                    if [ $? -ne 8 ]; then
 
-                            # Check if no ERROR occured
-                            if [ $? -eq 0 ]; then
-                                    echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased & wallet: $y"
+                        echo "FATAL! Does daemon working?"
+                        exit 1
 
-                                    # Increase finished block in MongoDB
-                                    mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $checkLastProgressIncreased}});" $database --quiet
+                    else
 
-                            else
-                                    echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased FAILED" 
-                            fi
-                        done
+                                setTimeStamp
+                                echo "$setDateStamp Up-to-date. No new blocks found. Last checked block was: $lastBlockInDB."
+                                exit 0
 
-                elif [ $? -eq 5 ]; then
-                        echo "$setDateStamp Processing: no new txids with a block: $checkLastProgressIncreased Sleeping for $blockTime s"
-                        sleep $blockTime
-                else
-                        setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
-                        echo "$setDateStamp Fatal ERROR occured, unsuported response from RPC"
-                fi
-        done
+                    fi
+
+        else
+
+                # Unexpected output code // Unresolvable error occured
+                setTimeStamp
+                echo "** $setDateStamp Unexpected ERROR occured, failed to get blockhash value. Tried to get block: $lastBlockInDB **"
+                exit 1
+        fi
 done

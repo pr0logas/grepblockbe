@@ -25,7 +25,7 @@ for (( ; ; ))
         for i in $(cat $dataFileWallets)
                 do
                         # Get txid data from RPC
-                            curl -m 10 -s ${chainProvider}${getTx}${i}\&decrypt\=1 | jq '' > $dataFileWallets2
+                            curl -m 10 -s ${chainProvider}${getTx}${i} | jq '' > $dataFileWallets2
                             cat $dataFileWallets2 | grep "txid" > /dev/null
                             if [[ $? = 1 ]]; then
                                 echo ""
@@ -77,4 +77,3 @@ for (( ; ; ))
                 fi
         done
 done
-
