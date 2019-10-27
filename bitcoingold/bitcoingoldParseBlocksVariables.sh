@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-. ~/grepblock/zcash/zcashDefaults.sh
+. ~/grepblock/bitcoingold/bitcoingoldDefaults.sh
 
-parseBlocksInRangeFor=39
+parseBlocksInRangeFor=59
 
-chainProvider="https://zcashnetwork.info"
+chainProvider="https://btgexplorer.com"
 getBlockHashMethod="api/block-index/"
 getBlockwithHashMethod="/api/block/"
 

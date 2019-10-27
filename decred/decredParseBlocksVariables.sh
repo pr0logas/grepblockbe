@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-. ~/grepblock/zcash/zcashDefaults.sh
+. ~/grepblock/decred/decredDefaults.sh
 
-parseBlocksInRangeFor=39
+parseBlocksInRangeFor=59
 
-chainProvider="https://zcashnetwork.info"
+chainProvider="https://mainnet.decred.org"
 getBlockHashMethod="api/block-index/"
 getBlockwithHashMethod="/api/block/"
 

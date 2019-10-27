@@ -40,7 +40,7 @@ for (( ; ; ))
                 if [ $? -eq 0 ]; then
 
                         IFS=$'\n'
-                        for y in $(cat $dataFileWallets2 | awk '/addresses/,/]/' | sed 's@"addresses":@@'g | sed 's@\[@@g' | sed 's@]@@g' | sed 's@}@@g'| sed 's@{@@g' | sed 's@,@@g' | sed 's@"@@g' | sed "s@ @@g" | sed '/^\s*$/d')
+                        for y in $(cat $dataFileWallets2 | awk '/addresses/,/]/' | sed 's@"addresses":@@'g | sed 's@\[@@g' | sed 's@]@@g' | sed 's@}@@g'| sed 's@{@@g' | sed 's@,@@g' | sed 's@"@@g' | sed "s@ @@g" | sed '/^\s*$/d' | uniq)
                             do
 
                             walletTime=$(cat $dataFileWallets2 | grep blocktime | grep -o '[0-9]*')
