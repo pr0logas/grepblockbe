@@ -84,7 +84,7 @@ for (( ; ; ))
 
         currentWallets=$(mongo --host $mongoHost --port $mongoPort --eval "db.wallets.find({\"walletTime\" : { \$gt : $genesisBlock}}).count()" --quiet $database | grep -o '[0-9,.-.]*')
         searchingForActiveWlt=$(mongo --host $mongoHost --port $mongoPort --eval "db.wallets.find({\"walletTime\" : { \$lt : $searchActiveWltMinus3mos}}).count()" --quiet $database | grep -o '[0-9,.-.]*')
-        searchingForActiveWlt=$(($searchingForActiveWlt - $currentWallets))
+        searchingForActiveWlt=$(($currentWallets - $searchingForActiveWlt))
 
                                 # Format JSON
                                 sed -i '$ d' $formatingFile
