@@ -68,7 +68,7 @@ for (( ; ; ))
 	lastProgress=$(echo "$lastProgress + $averageBlkMinus" | bc) 
 
         # LastProgress Time in DB
-        lastProgressInDB1=$(mongo --host $mongoHost --port $mongoPort --eval "db.blocks.find({\"time\" : { \$gt: $lastProgress}}).sort({\$natural: 1}).limit(1)" --quiet $database | grep -o -P '."time".{0,16}' | head -1 | grep -o '[0-9]*')
+        lastProgressInDB1=$(mongo --host $mongoHost --port $mongoPort --eval "db.wallets.find({\"walletTime\" : { \$gt: $lastProgress}}).sort({\$natural: 1}).limit(1)" --quiet $database | grep -o -P '."time".{0,16}' | head -1 | grep -o '[0-9]*')
 
 	if [ -z "$lastProgressInDB1" ]; then
 		setTimeStamp
