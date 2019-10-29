@@ -3,6 +3,18 @@
 # :: Create JSON directory if it's not exist ::
 mkdir -p ./JSON/
 
+function databaseAlive() {
+        mongo --host $mongoHost --port $mongoPort --eval 'db.getMongo().getDBNames()' --quiet $database > /dev/null
+        if [ $? = 0 ]; then
+                echo "Database working, OK" > /dev/null
+        else
+                echo ""
+                echo "FATAL! Database not working?"
+            	echo ""
+            	exit 1
+        fi
+}
+
 if [ -s $formatingFile ]; then
 
         echo ""
@@ -29,14 +41,7 @@ lastProgress=$(tail -n5 $formatingFile | grep -o '[0-9]*' | head -1)
 lastProgress=$(($lastProgress / 1000))
 
 # Check if DB works
-mongo --host $mongoHost --port $mongoPort --eval "db.priceDataUSD.find({\"block\" : 1}).limit(1);" --quiet $database > /dev/null
-
-if [[ $? -eq 0 ]]; then
-	echo "DB works" > /dev/null
-else 
-	echo "Database not working?" 
-	exit 1
-fi
+databaseAlive
 
 # LastProgress (Last actual value)
 lastProgressInDB2=$(mongo --host $mongoHost --port $mongoPort --eval 'db.priceDataUSD.find({}, {unix_time:1, _id:0}).sort({$natural: -1}).limit(1);' --quiet $database | grep -o -P '."unix_time".{0,16}' | head -1 | grep -o '[0-9]*')

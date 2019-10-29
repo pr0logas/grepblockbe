@@ -32,7 +32,7 @@ function checkLastBlockInDB() {
 function askChainProviderblockHash() {
     setTimeStamp
 	curl -m 10 -s ${chainProvider}${getBlockwithHashMethod}${1} | jq '' > $dataFileBlocks
-    cat $dataFileBlocks | grep "block" > /dev/null
+    cat $dataFileBlocks | grep "hash" > /dev/null
     if [[ $? = 1 ]]; then
         echo ""
         echo "$setDateStamp Up-to-date. No new blocks found? Last checked block was: $lastBlockInDB."
