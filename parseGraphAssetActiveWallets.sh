@@ -83,8 +83,8 @@ for (( ; ; ))
         searchActiveWltMinus3mos=$(($lastProgressInDB1 - 7776000))
 
         # Search for USD price
-        searchingForActiveWlt=$(mongo --host $mongoHost --port $mongoPort --eval "db.wallets.find({\"walletTime\" : { \$lt : $searchActiveWltMinus3mos}}).count()" --quiet $database | grep -o '[0-9,.-.]*')
-        
+        searchingForActiveWlt=$(mongo --host $mongoHost --port $mongoPort --eval "db.wallets.find({\"walletTime\" : { \$lt : $lastProgressInDB1}, \"walletTime\" : {\$gt : $searchActiveWltMinus3mos}}).count()" --quiet $database | grep -o '[0-9,.-.]*')
+
                                 # Format JSON
                                 sed -i '$ d' $formatingFile
                                 sed -i '$ d' $formatingFile
