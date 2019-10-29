@@ -82,9 +82,9 @@ for (( ; ; ))
         # Search only < 3 month older activeWallet count;
         searchActiveWltMinus3mos=$(($lastProgressInDB1 - 7776000))
 
-        currentWallets=$(mongo --host $mongoHost --port $mongoPort --eval "db.wallets.find({\"walletTime\" : { \$gt : $genesisBlock}}).count()" --quiet $database | grep -o '[0-9,.-.]*')
-        searchingForActiveWlt=$(mongo --host $mongoHost --port $mongoPort --eval "db.wallets.find({\"walletTime\" : { \$lt : $searchActiveWltMinus3mos}}).count()" --quiet $database | grep -o '[0-9,.-.]*')
-        searchingForActiveWlt=$(($currentWallets - $searchingForActiveWlt))
+        currentWalletsMinus3mos=$(mongo --host $mongoHost --port $mongoPort --eval "db.wallets.find({\"walletTime\" : { \$lt : $searchActiveWltMinus3mos}}).count()" --quiet $database | grep -o '[0-9,.-.]*')
+        searchingForActiveWlt=$(mongo --host $mongoHost --port $mongoPort --eval "db.wallets.find({\"walletTime\" : { \$lt : $lastProgress}}).count()" --quiet $database | grep -o '[0-9,.-.]*')
+        result=$(($searchingForActiveWlt - $currentWalletsMinus3mos))
 
                                 # Format JSON
                                 sed -i '$ d' $formatingFile
