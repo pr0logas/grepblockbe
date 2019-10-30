@@ -59,14 +59,15 @@ for (( ; ; ))
                             if [ $? -eq 0 ]; then
                                     echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased & wallet: $y"
 
-                                    # Increase finished block in MongoDB
-                                    mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $checkLastProgressIncreased}});" $database --quiet &> /dev/null
-
                             else
                                     echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased FAILED"
 				    exit 1
                             fi
                         done
+
+                                    # Increase finished block in MongoDB
+                                    mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $checkLastProgressIncreased}});" $database --quiet &> /dev/null
+
 
                 elif [ $? -eq 5 ]; then
                         echo "$setDateStamp Processing: no new txids with a block: $checkLastProgressIncreased Sleeping for $blockTime s"
