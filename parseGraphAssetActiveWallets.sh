@@ -94,7 +94,7 @@ for (( ; ; ))
                                 echo $addCurlyBracketsStart >> $formatingFile
                                 echo " \"x\" : ${lastProgressInDB1}" >> $formatingFile
                                 echo $addComma >> $formatingFile
-                                echo " \"y\" : ${searchingForActiveWlt}" >> $formatingFile
+                                echo " \"y\" : ${result}" >> $formatingFile
                                 echo $addCurlyBracketsEnd >> $formatingFile
                                 echo $addComma >> $formatingFile
 
@@ -108,7 +108,7 @@ for (( ; ; ))
 		stopCountingProcessTime		
 		setTimeStamp
 		runtime=$((end-start))
-		echo "$setDateStamp ActiveWallets: ${searchingForActiveWlt} we at $ConvertUnixTime now. Processing: $runtime ms."
+		echo "$setDateStamp ActiveWallets: ${result} we at $ConvertUnixTime now. Processing: $runtime ms."
 
                 # Copy JSON to production
                 scp ${formatingFile} root@${websiteHost}:/usr/share/nginx/grepblockcom/apidata/${assetTicker}/${file}

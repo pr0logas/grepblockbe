@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. ~/grepblock/digibyte/digibyteDefaults.sh
+. ~/grepblock/decred/decredDefaults.sh
 
 # File names
 file="assetVolume.json"
