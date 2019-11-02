@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+function startCountingProcessTime() {
+        start=$(($(date +%s%N)/1000000))
+}
+
+function stopCountingProcessTime() {
+        end=$(($(date +%s%N)/1000000))
+}
+
 # Check if we have a collection created
 check=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database | jq -r '.lastblock')
         if [[ $check < 0 ]] ; then
@@ -36,6 +44,7 @@ for (( ; ; ))
         IFS=$'\n'
         for i in $(cat $dataFileWallets)
                 do
+                        startCountingProcessTime
                         # Get txid data from RPC
                             curl -m 10 -s ${chainProvider}${getTx}${i}\&decrypt\=1 | jq '' > $dataFileWallets2
                             cat $dataFileWallets2 | grep "txid" > /dev/null
@@ -69,7 +78,9 @@ for (( ; ; ))
 
                             # Check if no ERROR occured
                             if [ $? -eq 0 ]; then
-                                    echo "$setDateStamp Processing: at block: $checkLastProgressIncreased & wallet: $y"
+                                    stopCountingProcessTime
+                                    runtime=$((end-start))
+                                    echo "$setDateStamp Processing: at block: $checkLastProgressIncreased & wallet: $y Processing: $runtime"
 
                             else
                                     echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased FAILED"
