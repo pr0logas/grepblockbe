@@ -44,7 +44,7 @@ for (( ; ; ))
         IFS=$'\n'
         for i in $(cat $dataFileWallets)
                 do
-                        startCountingProcessTime
+                        
                         # Get txid data from RPC
                         $daemonCli -rpcconnect=$rpcconnect -rpcport=$rpcport -rpcuser=$rpcuser -rpcpassword=$rpcpassword getrawtransaction $i 1 > $dataFileWallets2
 
@@ -54,7 +54,7 @@ for (( ; ; ))
                         IFS=$'\n'
                         for y in $(cat $dataFileWallets2 | awk '/addresses/,/]/' | sed 's@"addresses":@@'g | sed 's@\[@@g' | sed 's@]@@g' | sed 's@}@@g'| sed 's@{@@g' | sed 's@,@@g' | sed 's@"@@g' | sed "s@ @@g" | sed '/^\s*$/d' | sed 's@bitcoincash:@@g' | uniq)
                             do
-
+                            startCountingProcessTime
                             walletTime=$(cat $dataFileWallets2 | grep blocktime | grep -o '[0-9]*')
 
                             echo "{" > $dataFileWallets3
