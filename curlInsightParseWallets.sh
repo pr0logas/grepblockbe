@@ -68,7 +68,7 @@ for (( ; ; ))
                             if [ $? -eq 0 ]; then
                                     stopCountingProcessTime
                                     runtime=$((end-start))
-                                    echo "$setDateStamp Processing: at block: $checkLastProgressIncreased & wallet: $y Processing: $runtime"
+                                    echo "$setDateStamp Processing: at block: $checkLastProgressIncreased & wallet: $y Processing: $runtime ms"
 
                                     # Increase finished block in MongoDB
                                     mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $checkLastProgressIncreased}});" $database --quiet &> /dev/null

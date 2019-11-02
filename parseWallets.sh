@@ -72,7 +72,7 @@ for (( ; ; ))
                             if [ $? -eq 0 ]; then
                                     stopCountingProcessTime
                                     runtime=$((end-start))
-                                    echo "$setDateStamp Processing: at block: $checkLastProgressIncreased & wallet: $y Processing: $runtime"
+                                    echo "$setDateStamp Processing: at block: $checkLastProgressIncreased & wallet: $y Processing: $runtime ms"
 
                             else
                                     echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased FAILED"
