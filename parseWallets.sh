@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
-function startCountingProcessTime() {
-        start=$(($(date +%s%N)/1000000))
+function startCountingProcessTime1() {
+        start1=$(($(date +%s%N)/1000000))
+}
+
+function startCountingProcessTime2() {
+        start2=$(($(date +%s%N)/1000000))
+}
+
+function startCountingProcessTime3() {
+        start3=$(($(date +%s%N)/1000000))
 }
 
 function stopCountingProcessTime() {
@@ -32,6 +40,7 @@ mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"las
 for (( ; ; ))
         do
 
+        startCountingProcessTime1
         checkLastProgress=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database | jq -r '.lastblock')
 
         checkLastProgressIncreased=$(($checkLastProgress+1))
@@ -44,7 +53,7 @@ for (( ; ; ))
         IFS=$'\n'
         for i in $(cat $dataFileWallets)
                 do
-                        
+                        startCountingProcessTime2
                         # Get txid data from RPC
                         $daemonCli -rpcconnect=$rpcconnect -rpcport=$rpcport -rpcuser=$rpcuser -rpcpassword=$rpcpassword getrawtransaction $i 1 > $dataFileWallets2
 
@@ -54,7 +63,7 @@ for (( ; ; ))
                         IFS=$'\n'
                         for y in $(cat $dataFileWallets2 | awk '/addresses/,/]/' | sed 's@"addresses":@@'g | sed 's@\[@@g' | sed 's@]@@g' | sed 's@}@@g'| sed 's@{@@g' | sed 's@,@@g' | sed 's@"@@g' | sed "s@ @@g" | sed '/^\s*$/d' | sed 's@bitcoincash:@@g' | uniq)
                             do
-                            startCountingProcessTime
+                            startCountingProcessTime3
                             walletTime=$(cat $dataFileWallets2 | grep blocktime | grep -o '[0-9]*')
 
                             echo "{" > $dataFileWallets3
@@ -71,8 +80,10 @@ for (( ; ; ))
                             # Check if no ERROR occured
                             if [ $? -eq 0 ]; then
                                     stopCountingProcessTime
-                                    runtime=$((end-start))
-                                    echo "$setDateStamp Processing: at block: $checkLastProgressIncreased & wallet: $y Processing: $runtime ms"
+                                    runtime1=$((end-start1))
+                                    runtime2=$((end-start2))
+                                    runtime3=$((end-start3))
+                                    echo "$setDateStamp Processing: at block: $checkLastProgressIncreased & wallet: $y Processing: $runtime1/$runtime2/$runtime3 ms"
 
                             else
                                     echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased FAILED"
