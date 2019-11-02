@@ -2,9 +2,6 @@
 
 . ~/grepblock/syscoin/syscoinDefaults.sh
 
-chainProvider="http://explorer.blockchainfoundry.co"
-getTx='/api/getrawtransaction?txid='
-
 collectionWallets=wallets
 dataFileWallets=/tmp/${database}-parsedWallets.json
 dataFileWallets2=/tmp/${database}-parsedWallets2.json

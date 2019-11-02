@@ -19,5 +19,10 @@ rpcport=8370
 rpcuser=grepblock
 rpcpassword=tothemoon
 
+getTx='/api/getrawtransaction?txid='
+chainProvider="http://explorer.blockchainfoundry.co"
+getBlockHashMethod='/api/getblockhash?index='
+getBlockwithHashMethod='/api/getblock?hash='
+
 #
 daemonCli="syscoin-cli"
