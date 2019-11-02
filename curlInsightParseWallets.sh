@@ -57,7 +57,7 @@ for (( ; ; ))
 
                             # Check if no ERROR occured
                             if [ $? -eq 0 ]; then
-                                    echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased & wallet: $y"
+                                    echo "$setDateStamp Processing: at block: $checkLastProgressIncreased & wallet: $y"
 
                                     # Increase finished block in MongoDB
                                     mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $checkLastProgressIncreased}});" $database --quiet &> /dev/null

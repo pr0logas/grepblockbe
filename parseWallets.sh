@@ -60,7 +60,7 @@ for (( ; ; ))
 
                             # Check if no ERROR occured
                             if [ $? -eq 0 ]; then
-                                    echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased & wallet: $y"
+                                    echo "$setDateStamp Processing: at block: $checkLastProgressIncreased & wallet: $y"
 
                             else
                                     echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased FAILED"
