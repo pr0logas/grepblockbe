@@ -105,7 +105,6 @@ for (( ; ; ))
                                      runtime2=$((end2-start2))
                                      setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
                                      echo -e "${BLUE} $setDateStamp Txid aggregation done: $i $runtime2 ms ${NC}"
-                                     echo "*******************************************************************************************************************************"
 
 
                 elif [ $? -eq 5 ]; then
@@ -122,5 +121,4 @@ for (( ; ; ))
                                     runtime1=$((end1-start1))
                                     setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
                                     echo -e "${GREEN} $setDateStamp Block aggregation finished: $checkLastProgressIncreased Overall processing took: $runtime1 ms ${NC}"
-                                    echo "-----------------------------------------------------------------------------------------------------------"
 done
