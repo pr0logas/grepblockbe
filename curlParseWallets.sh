@@ -65,6 +65,7 @@ for (( ; ; ))
         IFS=$'\n'
         for i in $(cat $dataFileWallets)
                 do
+
                         # Get txid data from RPC
 			startCountingProcessTime2
                             curl -m 10 -s ${chainProvider}${getTx}${i}\&decrypt\=1 | jq '' > $dataFileWallets2
@@ -82,7 +83,7 @@ for (( ; ; ))
                 if [ $? -eq 0 ]; then
 
                         IFS=$'\n'
-                        for y in $(cat $dataFileWallets2 | awk '/addresses/,/]/' | sed 's@"addresses":@@'g | sed 's@\[@@g' | sed 's@]@@g' | sed 's@}@@g'| sed 's@{@@g' | sed 's@,@@g' | sed 's@"@@g' | sed "s@ @@g" | sed '/^\s*$/d' | sed 's@bitcoincash:@@g' | uniq)
+                        for y in $(cat $dataFileWallets2 | awk '/addresses/,/]/' | sed 's@"addresses":@@'g | sed 's@\[@@g' | sed 's@]@@g' | sed 's@}@@g'| sed 's@{@@g' | sed 's@,@@g' | sed 's@"@@g' | sed "s@ @@g" | sed '/^\s*$/d' | uniq)
                             do
                             startCountingProcessTime3
                             walletTime=$(cat $dataFileWallets2 | grep blocktime | grep -o '[0-9]*')
