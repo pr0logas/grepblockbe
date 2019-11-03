@@ -104,7 +104,7 @@ for (( ; ; ))
                                      stopCountingProcessTime2
                                      runtime2=$((end2-start2))
                                      setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
-                                     echo -e "${BLUE} $setDateStamp Txid aggregation done: $i $runtime2 ms {NC}"
+                                     echo -e "${BLUE} $setDateStamp Txid aggregation done: $i $runtime2 ms ${NC}"
                                      echo "*******************************************************************************************************************************"
 
 
