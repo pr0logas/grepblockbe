@@ -100,7 +100,9 @@ for (( ; ; ))
                                      stopCountingProcessTime2
                                      runtime2=$((end2-start2))
                                      setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
+                                     echo "***********************************************************************************************"
                                      echo "$setDateStamp Txid aggregation done: $i $runtime2 ms"
+                                     echo "***********************************************************************************************"
 
 
                 elif [ $? -eq 5 ]; then
@@ -116,5 +118,7 @@ for (( ; ; ))
                                     stopCountingProcessTime1
                                     runtime1=$((end1-start1))
                                     setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
-                                    echo "$setDateStamp Block aggregation finished: $checkLastProgressIncreased $runtime1 ms"
+                                    echo "-----------------------------------------------------------------------------------------------------------"
+                                    echo "$setDateStamp Block aggregation finished: $checkLastProgressIncreased Overall processing took: $runtime1 ms"
+                                    echo "-----------------------------------------------------------------------------------------------------------"
 done
