@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
 function startCountingProcessTime1() {
         start1=$(($(date +%s%N)/1000000))
 }
@@ -100,7 +104,7 @@ for (( ; ; ))
                                      stopCountingProcessTime2
                                      runtime2=$((end2-start2))
                                      setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
-                                     echo "$setDateStamp Txid aggregation done: $i $runtime2 ms"
+                                     echo "${BLUE}$setDateStamp Txid aggregation done: $i $runtime2 ms{NC}"
                                      echo "*******************************************************************************************************************************"
 
 
@@ -117,6 +121,6 @@ for (( ; ; ))
                                     stopCountingProcessTime1
                                     runtime1=$((end1-start1))
                                     setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
-                                    echo "$setDateStamp Block aggregation finished: $checkLastProgressIncreased Overall processing took: $runtime1 ms"
+                                    echo "${GREEN}$setDateStamp Block aggregation finished: $checkLastProgressIncreased Overall processing took: $runtime1 ms${NC}"
                                     echo "-----------------------------------------------------------------------------------------------------------"
 done
