@@ -120,5 +120,6 @@ for (( ; ; ))
                                     stopCountingProcessTime1
                                     runtime1=$((end1-start1))
                                     setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
-                                    echo -e "${GREEN}$setDateStamp Block aggregation finished: $checkLastProgressIncreased Overall processing took: $runtime1 ms ${NC}"
+                                    ConvertUnixTime="$(date -d @${walletTime} +'%Y-%m-%d')"
+                                    echo -e "${GREEN}$setDateStamp Block aggregation finished: block: $checkLastProgressIncreased at $ConvertUnixTime. Overall processing took: $runtime1 ms ${NC}"
 done
