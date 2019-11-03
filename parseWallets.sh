@@ -86,7 +86,6 @@ for (( ; ; ))
 
                             mongoimport --host $mongoHost --port $mongoPort --db $database --collection $collectionWallets --file $dataFileWallets3 --mode upsert --upsertFields wallet --quiet &> /dev/null
 
-
                             # Check if no ERROR occured
                             if [ $? -eq 0 ]; then
                                     

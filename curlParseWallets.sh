@@ -1,11 +1,31 @@
 #!/usr/bin/env bash
 
-function startCountingProcessTime() {
-        start=$(($(date +%s%N)/1000000))
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+function startCountingProcessTime1() {
+        start1=$(($(date +%s%N)/1000000))
 }
 
-function stopCountingProcessTime() {
-        end=$(($(date +%s%N)/1000000))
+function startCountingProcessTime2() {
+        start2=$(($(date +%s%N)/1000000))
+}
+
+function startCountingProcessTime3() {
+        start3=$(($(date +%s%N)/1000000))
+}
+
+function stopCountingProcessTime1() {
+        end1=$(($(date +%s%N)/1000000))
+}
+
+function stopCountingProcessTime2() {
+        end2=$(($(date +%s%N)/1000000))
+}
+
+function stopCountingProcessTime3() {
+        end3=$(($(date +%s%N)/1000000))
 }
 
 # Check if we have a collection created
@@ -18,11 +38,11 @@ check=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find(
 
         checkLastProgress=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database | jq -r '.lastblock')
 
-        if [[ $checkLastProgress -eq 0 ]]; then
-                tempReduce=$(($checkLastProgress+0))
-        else
-                tempReduce=$(($checkLastProgress-1))
-        fi
+	if [[ $checkLastProgress -eq 0 ]]; then
+		tempReduce=$(($checkLastProgress+0))
+	else
+        	tempReduce=$(($checkLastProgress-1))
+	fi
 
 # Decrease block in MongoDB in case of previuos failure
 mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $tempReduce}});" $database --quiet &> /dev/null
@@ -32,6 +52,7 @@ mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"las
 for (( ; ; ))
         do
 
+        startCountingProcessTime1
         checkLastProgress=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database | jq -r '.lastblock')
 
         checkLastProgressIncreased=$(($checkLastProgress+1))
@@ -45,6 +66,7 @@ for (( ; ; ))
         for i in $(cat $dataFileWallets)
                 do
                         # Get txid data from RPC
+			startCountingProcessTime2
                             curl -m 10 -s ${chainProvider}${getTx}${i}\&decrypt\=1 | jq '' > $dataFileWallets2
                             cat $dataFileWallets2 | grep "txid" > /dev/null
                             if [[ $? = 1 ]]; then
@@ -60,9 +82,9 @@ for (( ; ; ))
                 if [ $? -eq 0 ]; then
 
                         IFS=$'\n'
-                        for y in $(cat $dataFileWallets2 | awk '/addresses/,/]/' | sed 's@"addresses":@@'g | sed 's@\[@@g' | sed 's@]@@g' | sed 's@}@@g'| sed 's@{@@g' | sed 's@,@@g' | sed 's@"@@g' | sed "s@ @@g" | sed '/^\s*$/d' | uniq)
+                        for y in $(cat $dataFileWallets2 | awk '/addresses/,/]/' | sed 's@"addresses":@@'g | sed 's@\[@@g' | sed 's@]@@g' | sed 's@}@@g'| sed 's@{@@g' | sed 's@,@@g' | sed 's@"@@g' | sed "s@ @@g" | sed '/^\s*$/d' | sed 's@bitcoincash:@@g' | uniq)
                             do
-                            startCountingProcessTime
+                            startCountingProcessTime3
                             walletTime=$(cat $dataFileWallets2 | grep blocktime | grep -o '[0-9]*')
 
                             echo "{" > $dataFileWallets3
@@ -71,24 +93,26 @@ for (( ; ; ))
                             echo "\"wallet\" : \"$y\"" >> $dataFileWallets3
                             echo "}" >> $dataFileWallets3
 
-                            setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
-
                             mongoimport --host $mongoHost --port $mongoPort --db $database --collection $collectionWallets --file $dataFileWallets3 --mode upsert --upsertFields wallet --quiet &> /dev/null
 
                             # Check if no ERROR occured
                             if [ $? -eq 0 ]; then
-                                    stopCountingProcessTime
-                                    runtime=$((end-start))
-                                    echo "$setDateStamp Processing: at block: $checkLastProgressIncreased & wallet: $y Processing: $runtime ms"
+                                    
+                                    
+                                     stopCountingProcessTime3
+                                     runtime3=$((end3-start3))
+                                     setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
+                                     echo "$setDateStamp Processing wallet: $y $runtime3 ms"
 
                             else
                                     echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased FAILED"
 				    exit 1
                             fi
                         done
-
-                                    # Increase finished block in MongoDB
-                                    mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $checkLastProgressIncreased}});" $database --quiet &> /dev/null
+                                     stopCountingProcessTime2
+                                     runtime2=$((end2-start2))
+                                     setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
+                                     echo -e "${BLUE}$setDateStamp Txid aggregation done: $i $runtime2 ms ${NC}"
 
 
                 elif [ $? -eq 5 ]; then
@@ -99,5 +123,12 @@ for (( ; ; ))
                         echo "$setDateStamp Fatal ERROR occured, unsuported response from RPC"
                 fi
         done
+                                    # Increase finished block in MongoDB
+                                    mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $checkLastProgressIncreased}});" $database --quiet &> /dev/null
+                                    stopCountingProcessTime1
+                                    runtime1=$((end1-start1))
+                                    setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
+                                    ConvertUnixTime="$(date -d @${walletTime} +'%Y-%m-%d')"
+                                    echo -e "${GREEN}$setDateStamp Block aggregation finished: block: $checkLastProgressIncreased at $ConvertUnixTime. Overall processing took: $runtime1 ms ${NC}"
 done
 
