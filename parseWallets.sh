@@ -12,8 +12,16 @@ function startCountingProcessTime3() {
         start3=$(($(date +%s%N)/1000000))
 }
 
-function stopCountingProcessTime() {
-        end=$(($(date +%s%N)/1000000))
+function stopCountingProcessTime1() {
+        end1=$(($(date +%s%N)/1000000))
+}
+
+function stopCountingProcessTime2() {
+        end2=$(($(date +%s%N)/1000000))
+}
+
+function stopCountingProcessTime3() {
+        end3=$(($(date +%s%N)/1000000))
 }
 
 # Check if we have a collection created
@@ -72,27 +80,28 @@ for (( ; ; ))
                             echo "\"wallet\" : \"$y\"" >> $dataFileWallets3
                             echo "}" >> $dataFileWallets3
 
-                            setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
-
                             mongoimport --host $mongoHost --port $mongoPort --db $database --collection $collectionWallets --file $dataFileWallets3 --mode upsert --upsertFields wallet --quiet &> /dev/null
 
 
                             # Check if no ERROR occured
                             if [ $? -eq 0 ]; then
-                                    stopCountingProcessTime
-                                    runtime1=$((end-start1))
-                                    runtime2=$((end-start2))
-                                    runtime3=$((end-start3))
-                                    echo "$setDateStamp Processing: at block: $checkLastProgressIncreased & wallet: $y Processing: $runtime1/$runtime2/$runtime3 ms"
+                                    
+                                    
+                                     stopCountingProcessTime3
+                                     runtime3=$((end3-start3))
+                                     setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
+                                     echo "$setDateStamp Processing wallet: $y $runtime3 ms"
 
                             else
                                     echo "$setDateStamp Processing: txid: $i at block: $checkLastProgressIncreased FAILED"
 				    exit 1
                             fi
                         done
+                                     stopCountingProcessTime2
+                                     runtime2=$((end2-start2))
+                                     setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
+                                     echo "$setDateStamp Txid aggregation done: $i $runtime2 ms"
 
-                                    # Increase finished block in MongoDB
-                                    mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $checkLastProgressIncreased}});" $database --quiet &> /dev/null
 
                 elif [ $? -eq 5 ]; then
                         echo "$setDateStamp Processing: no new txids with a block: $checkLastProgressIncreased Sleeping for $blockTime s"
@@ -102,4 +111,10 @@ for (( ; ; ))
                         echo "$setDateStamp Fatal ERROR occured, unsuported response from RPC"
                 fi
         done
+                                    # Increase finished block in MongoDB
+                                    mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $checkLastProgressIncreased}});" $database --quiet &> /dev/null
+                                    stopCountingProcessTime1
+                                    runtime1=$((end1-start1))
+                                    setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
+                                    echo "$setDateStamp Block aggregation finished: $checkLastProgressIncreased $runtime1 ms"
 done
