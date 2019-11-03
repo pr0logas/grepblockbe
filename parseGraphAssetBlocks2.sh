@@ -74,7 +74,7 @@ if [ $? -eq 0 ]; then
                         formatNextDayRevA=$(echo $NextDayRevA | sed 's@0@@g')
 			
                         # Check if it's next day or not?
-                        if [[ $formatThisDayRevA -eq $formatNextDayRevA ]] && [[ $sumBlocks > 10 ]] ; then
+                        if [[ $formatThisDayRevA -eq $formatNextDayRevA ]] && [[ $sumBlocks -gt 10 ]] ; then
                                 # Format JSON
                                 sed -i '$ d' $formatingFile
                                 sed -i '$ d' $formatingFile
