@@ -2,9 +2,6 @@
 
 . ~/grepblock/zcash/zcashDefaults.sh
 
-chainProvider="https://zcashnetwork.info"
-getTx='/api/tx/'
-
 collectionWallets=wallets
 dataFileWallets=/tmp/${database}-parsedWallets.json
 dataFileWallets2=/tmp/${database}-parsedWallets2.json

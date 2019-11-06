@@ -9,7 +9,7 @@ mongoPort=27017
 database=solaris
 assetTicker="XLR"
 assetName="solaris"
-genesisBlock=1506797022
+genesisBlock=1572355036
 coinGeckoStartUnixTime="1512864000"
 blockTime=60
 
@@ -18,6 +18,13 @@ rpcconnect=10.10.100.201
 rpcport=1111
 rpcuser=grepblock
 rpcpassword=tothemoon
+
+parseBlocksInRangeFor=99
+
+chainProvider="https://explorer.solarisplatform.com"
+getBlockHashMethod='/api/getblockhash?index='
+getBlockwithHashMethod='/api/getblock?hash='
+getTx='/api/getrawtransaction?txid='
 
 #
 daemonCli="solaris-cli"

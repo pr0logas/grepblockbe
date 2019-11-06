@@ -62,7 +62,7 @@ if [ $? -eq 0 ]; then
 
                         if [ $? -eq 0 ]; then
 
-                        unixTime=$(mongo --host $mongoHost --port $mongoPort --eval "db.blocks.find({\"block\" : $i}, {time:1, _id:0})" --quiet $database | jq '.time')
+                        unixTime=$(mongo --host $mongoHost --port $mongoPort --eval "db.blocks.find({\"block\" : $i}, {time:1, _id:0})" --quiet $database | grep -o '[0-9]*')
 
                         sumBlocks=$(($sumBlocks + $blocks))
 

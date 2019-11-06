@@ -2,13 +2,6 @@
 
 . ~/grepblock/zcash/zcashDefaults.sh
 
-parseBlocksInRangeFor=39
-
-chainProvider="https://zcashnetwork.info"
-getBlockHashMethod="api/block-index/"
-getBlockwithHashMethod="/api/block/"
-
-
 collectionBlocks=blocks
 dataFileBlocks=/tmp/${database}-parsedBlock.json
 

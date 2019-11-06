@@ -19,5 +19,12 @@ rpcport=18332
 rpcuser=grepblockuser
 rpcpassword=grepblocktothemoon
 
+# cURL
+chainProvider="https://blockdozer.com"
+parseBlocksInRangeFor=199
+getBlockHashMethod="api/block-index/"
+getBlockwithHashMethod="/api/block/"
+getTx='/api/tx/'
+
 #
 daemonCli="bitcoincash-cli"

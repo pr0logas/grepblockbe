@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. ~/grepblock/snowgem/snowgemDefaults.sh
+. ~/grepblock/reddcoin/reddcoinDefaults.sh
 
 collectionWallets=wallets
 dataFileWallets=/tmp/${database}-parsedWallets.json

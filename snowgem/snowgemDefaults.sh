@@ -19,5 +19,10 @@ rpcport=16112
 rpcuser=grepblock
 rpcpassword=tothemoon
 
+chainProvider="https://explorer.snowgem.org"
+getTx='/api/tx/'
+getBlockHashMethod='/api/block-index/'
+getBlockwithHashMethod='/api/block/'
+
 #
 daemonCli="snowgem-cli"

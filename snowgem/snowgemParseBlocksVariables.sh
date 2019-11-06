@@ -2,10 +2,10 @@
 
 . ~/grepblock/snowgem/snowgemDefaults.sh
 
-parseBlocksInRangeFor=199
+parseBlocksInRangeFor=20
 
 collectionBlocks=blocks
 dataFileBlocks=/tmp/${database}-parsedBlock.json
 
 # Start parsing
-source ~/grepblock/parseBlock.sh
+source ~/grepblock/curlInsightParseBlock.sh
