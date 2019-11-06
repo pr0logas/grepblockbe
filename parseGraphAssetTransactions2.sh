@@ -64,6 +64,8 @@ if [ $? -eq 0 ]; then
 
                         unixTime="$(mongo --host $mongoHost --port $mongoPort --eval "db.blocks.find({\"block\" : $i}, {time:1, _id:0})" --quiet "$database" | jq '.time')"
 
+			unixTime="$(echo "$unixTime" | sed 's@"@@g')"
+
                         numberTxs="$(($numberTxs - 2))"
                         sumTxs="$(($sumTxs + $numberTxs))"
 

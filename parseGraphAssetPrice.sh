@@ -75,7 +75,7 @@ for (( ; ; ))
 		echo "]" >> $formatingFile
 		
 		# Copy JSON to production
-                scp ${formatingFile} root@${websiteHost}:/usr/share/nginx/grepblockcom/apidata/${assetTicker}/${file}
+        scp ${formatingFile} root@${websiteHost}:/usr/share/nginx/grepblockcom/apidata/${assetTicker}/${file}
 		
 		dateProgress=$(date -d @${lastProgressInDB1} +'%Y-%m-%d')
 		setDateStamp=$(date +%Y-%m-%d\|%H:%M:%S\|%N)
