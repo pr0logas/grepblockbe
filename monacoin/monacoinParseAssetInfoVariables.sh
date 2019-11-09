@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. ~/grepblock/solaris/solarisDefaults.sh
+. ~/grepblock/monacoin/monacoinDefaults.sh
 
 # File names
 file="assetInfo.json"

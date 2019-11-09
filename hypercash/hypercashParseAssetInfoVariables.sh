@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. ~/grepblock/solaris/solarisDefaults.sh
+. ~/grepblock/hypercash/hypercashDefaults.sh
 
 # File names
 file="assetInfo.json"

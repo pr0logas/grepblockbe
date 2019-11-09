@@ -14,4 +14,4 @@ addCurlyBracketsEnd="}"
 addCurlyBracketsStart="{"
 
 # Start parsing
-source ~/grepblock/assetInfo.sh
+source ~/grepblock/assetInfo/${database}/assetInfo.sh
