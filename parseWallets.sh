@@ -60,13 +60,10 @@ check=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find(
 # Decrease block in MongoDB in case of previuos failure
 mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $tempReduce}});" $database --quiet &> /dev/null
 
-lastBlockInDB=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database | jq -r '.lastblock')
+syncXBlocks=$((${check}+${parseBlocksInRangeFor}))
 
-syncXBlocks=$((${lastBlockInDB}+${parseBlocksInRangeFor}))
-
-# Start for loop from last block in DB
-for (( i=${lastBlockInDB}; i<=${syncXBlocks}; i++ ))
-
+# :: Starting infinte loop to sync up to date ::
+for (( ; ; ))
         do
 
         # Database alive?
