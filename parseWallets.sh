@@ -40,9 +40,6 @@ function stopCountingProcessTime3() {
         end3=$(($(date +%s%N)/1000000))
 }
 
-function checkLastBlockInDB() {
-        mongo --host $mongoHost --port $mongoPort --eval 'db.blocks.find({}, {block:1, _id:0}).limit(1).sort({$natural: -1}).limit(1);' --quiet $database | grep -o '[0-9]*'
-}
 
 # Check if we have a collection created
 check=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database | jq -r '.lastblock')
@@ -63,9 +60,9 @@ check=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find(
 # Decrease block in MongoDB in case of previuos failure
 mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $tempReduce}});" $database --quiet &> /dev/null
 
-lastBlockInDB=$(checkLastBlockInDB)
+lastBlockInDB=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database | jq -r '.lastblock')
 
-syncXBlocks=$(($lastBlockInDB+${parseBlocksInRangeFor}))
+syncXBlocks=$((${lastBlockInDB}+${parseBlocksInRangeFor}))
 
 # Start for loop from last block in DB
 for (( i=${lastBlockInDB}; i<=${syncXBlocks}; i++ ))
