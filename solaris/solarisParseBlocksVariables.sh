@@ -6,4 +6,4 @@ collectionBlocks=blocks
 dataFileBlocks=/tmp/${database}-parsedBlock.json
 
 # Start parsing
-source ~/grepblock/curlParseBlock.sh
+source ~/grepblock/parseBlocks/${database}/curlParseBlock.sh

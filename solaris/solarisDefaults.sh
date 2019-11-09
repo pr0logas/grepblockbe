@@ -26,5 +26,7 @@ getBlockHashMethod='/api/getblockhash?index='
 getBlockwithHashMethod='/api/getblock?hash='
 getTx='/api/getrawtransaction?txid='
 
+apiProvider="api.coingecko.com"
+unixTime=$(date +%s)
 #
 daemonCli="solaris-cli"

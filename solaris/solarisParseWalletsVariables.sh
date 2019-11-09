@@ -8,4 +8,4 @@ dataFileWallets2=/tmp/${database}-parsedWallets2.json
 dataFileWallets3=/tmp/${database}-parsedWallets3.json
 
 # Start parsing
-source ~/grepblock/curlParseWallets.sh
+source ~/grepblock/parseWallets/${database}/curlParseWallets.sh

@@ -13,4 +13,4 @@ addCurlyBracketsEnd="}"
 addCurlyBracketsStart="{"
 
 # Start parsing
-source ~/grepblock/parseGraphAssetBlockchainSize.sh
+source ~/grepblock/parseGraphs/${database}/parseGraphAssetBlockchainSize.sh

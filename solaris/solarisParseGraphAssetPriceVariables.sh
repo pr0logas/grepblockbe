@@ -14,8 +14,5 @@ addCurlyBracketsEnd="}"
 addCurlyBracketsStart="{"
 
 
-apiProvider="api.coingecko.com"
-unixTime=$(date +%s)
-
 # Start parsing
-source ~/grepblock/parseGraphAssetPriceQuick.sh
+source ~/grepblock/parseGraphs/${database}/parseGraphAssetPriceQuick.sh

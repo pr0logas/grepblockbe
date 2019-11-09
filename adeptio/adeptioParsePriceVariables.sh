@@ -11,4 +11,4 @@ vsCurrencyUSD="usd"
 vsCurrencyBTC="btc"
 
 # Start parsing
-source ~/grepblock/parsePrice.sh
+source ~/grepblock/parsePrices/${database}/parsePrice.sh

@@ -10,4 +10,4 @@ vsCurrencyUSD="usd"
 vsCurrencyBTC="btc"
 
 # Start parsing
-source ~/grepblock/parseHistoricalPrice.sh
+source ~/grepblock/parsePrices/${database}/parseHistoricalPrice.sh

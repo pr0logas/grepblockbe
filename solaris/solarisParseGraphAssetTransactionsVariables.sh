@@ -13,4 +13,4 @@ addCurlyBracketsEnd="}"
 addCurlyBracketsStart="{"
 
 # Start parsing
-source ~/grepblock/parseGraphAssetTransactions3.sh
+source ~/grepblock/parseGraphs/${database}/parseGraphAssetTransactions.sh

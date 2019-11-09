@@ -18,4 +18,4 @@ apiProvider="api.coingecko.com"
 unixTime=$(date +%s)
 
 # Start parsing
-source ~/grepblock/parseGraphAssetVolumeQuick.sh
+source ~/grepblock/parseGraphs/${database}/parseGraphAssetVolumeQuick.sh
