@@ -81,7 +81,7 @@ for (( ; ; ))
             echo "$setDateStamp Processing: no new txids with a block: $checkLastProgressIncreased Sleeping for $blockTime s"
             exit 0
         else
-            echo "All good" > /dev/null
+            echo "All good, still not latest block" > /dev/null
         fi
 
         # Search TXids in required block
