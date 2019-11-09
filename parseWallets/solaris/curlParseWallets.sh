@@ -4,6 +4,18 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+function databaseAlive() {
+        mongo --host $mongoHost --port $mongoPort --eval 'db.getMongo().getDBNames()' --quiet $database > /dev/null
+        if [ $? = 0 ]; then
+            echo "Database working, OK" > /dev/null
+        else
+                echo ""
+                echo "FATAL! Database not working?"
+            echo ""
+            exit 1
+        fi
+}
+
 function startCountingProcessTime1() {
         start1=$(($(date +%s%N)/1000000))
 }
@@ -51,6 +63,8 @@ mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"las
 # :: Starting infinte loop to sync up to date ::
 for (( ; ; ))
         do
+
+        databaseAlive
 
         startCountingProcessTime1
         checkLastProgress=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database | jq -r '.lastblock')
