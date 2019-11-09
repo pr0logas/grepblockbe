@@ -19,5 +19,12 @@ rpcport=18231
 rpcuser=grepblockuser
 rpcpassword=grepblocktothemoon
 
+parseBlocksInRangeFor=999
+
+chainProvider="https://explorer.horizen.cc"
+getBlockHashMethod='/api/getblockhash?index='
+getBlockwithHashMethod='/api/getblock?hash='
+
+
 #
 daemonCli="zen-cli"
