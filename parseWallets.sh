@@ -78,6 +78,13 @@ for (( ; ; ))
                             startCountingProcessTime3
                             walletTime=$(cat $dataFileWallets2 | grep blocktime | grep -o '[0-9]*')
 
+                            if [ -z "$walletTime" ]; then
+                                walletTime=null
+                            else 
+                                echo "All good" > /dev/null
+                            fi
+
+
                             echo "{" > $dataFileWallets3
                             echo "\"block\" : ${checkLastProgressIncreased}," >> $dataFileWallets3
                             echo "\"walletTime\" : ${walletTime}," >> $dataFileWallets3
