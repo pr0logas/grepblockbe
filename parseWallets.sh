@@ -40,6 +40,9 @@ function stopCountingProcessTime3() {
         end3=$(($(date +%s%N)/1000000))
 }
 
+function checkLastBlockInDB() {
+    mongo --host $mongoHost --port $mongoPort --eval 'db.blocks.find({}, {block:1, _id:0}).limit(1).sort({$natural: -1}).limit(1);' --quiet $database | grep -o '[0-9]*'
+}
 
 # Check if we have a collection created
 check=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database | jq -r '.lastblock')
@@ -60,7 +63,7 @@ check=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find(
 # Decrease block in MongoDB in case of previuos failure
 mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $tempReduce}});" $database --quiet &> /dev/null
 
-syncXBlocks=$((${check}+${parseBlocksInRangeFor}))
+lastBlockInDB=$(checkLastBlockInDB)
 
 # :: Starting infinte loop to sync up to date ::
 for (( ; ; ))
@@ -73,6 +76,13 @@ for (( ; ; ))
         checkLastProgress=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database | jq -r '.lastblock')
 
         checkLastProgressIncreased=$(($checkLastProgress+1))
+
+        if [[ $checkLastProgressIncreased -eq  $lastBlockInDB ]]; then
+            echo "$setDateStamp Processing: no new txids with a block: $checkLastProgressIncreased Sleeping for $blockTime s"
+            exit 0
+        else
+            echo "All good" > /dev/null
+        fi
 
         # Search TXids in required block
         mongo --host $mongoHost --port $mongoPort --eval "db.blocks.find({\"block\" : $checkLastProgressIncreased}, {tx:1, _id:0});" --quiet $database | jq -r '.tx' | jq '.[]' > $dataFileWallets
