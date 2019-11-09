@@ -73,6 +73,7 @@ if [[ $diff -gt 10 ]] || [[ $diff -lt 0 ]]; then
     exit 0
 else 
     echo "All good" > /dev/null
+fi
 
 for (( ; ; ))
 
