@@ -66,7 +66,7 @@ fi
 # Are we up to date?
 lastBlock=$(checkLastBlockInDB)
 checkLastBlocktxidProgres=$(checkLastBlockInDBtxidProgress)
-diff=$(echo "$checkLastBlockInDB - $checkLastBlocktxidProgres" | bc)
+diff=$(echo "$lastBlock - $checkLastBlocktxidProgres" | bc)
 
 if [[ $diff -gt 10 ]] || [[ $diff -lt 0 ]]; then
     echo "We are not up to date with blocks collection! Diff $diff"
