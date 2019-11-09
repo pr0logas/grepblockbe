@@ -27,14 +27,22 @@ function stopCountingProcessTime() {
         end=$(($(date +%s%N)/1000000))
 }
 
+function checkLastBlockInDB() {
+    mongo --host $mongoHost --port $mongoPort --eval 'db.blocks.find({}, {block:1, _id:0}).limit(1).sort({$natural: -1}).limit(1);' --quiet $database | grep -o '[0-9]*'
+}
+
+function checkLastBlockInDBtxidProgress() {
+    mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).limit(1).sort({$natural: -1}).limit(1);' --quiet $database | grep -o '[0-9]*'
+}
+
 if [ -s $formatingFile ]; then
-		
+        
         echo ""
         echo "Found data in file. All Good. Continuing progress and appending only new data..."
-		echo ""
+        echo ""
 
 else
-		echo ""
+        echo ""
         echo "Warning! data file is empty. Flushing first parameters and starting from zero!"
         echo ""
         echo $addCurlyBracketsStart >> $formatingFile
@@ -55,29 +63,42 @@ else
         echo $addCurlyBracketsEnd >> $formatingFile
 fi
 
+# Are we up to date?
+lastBlock=$(checkLastBlockInDB)
+checkLastBlocktxidProgres=$(checkLastBlockInDBtxidProgress)
+diff=$(echo "$lastBlock - $checkLastBlocktxidProgres" | bc)
+
+if [[ $diff -gt 10 ]] || [[ $diff -lt 0 ]]; then
+    echo "We are not up to date with blocks collection! Diff $diff"
+    exit 0
+else 
+    echo "All good" > /dev/null
+fi
+
 for (( ; ; ))
-        do
+
+    do
     # Check if DB works
     databaseAlive
-	startCountingProcessTime
+    startCountingProcessTime
     # Check last progress
     lastProgress=$(tail -n10 $formatingFile  | grep x | grep -o '[0-9]*')
-	
-	averageBlkMinus=$(echo "86400 - $blockTime" | bc)	
+    
+    averageBlkMinus=$(echo "86400 - $blockTime" | bc)   
 
-	lastProgress=$(echo "$lastProgress + $averageBlkMinus" | bc) 
+    lastProgress=$(echo "$lastProgress + $averageBlkMinus" | bc) 
 
-        # LastProgress Time in DB
-        lastProgressInDB1=$(mongo --host $mongoHost --port $mongoPort --eval "db.blocks.find({\"time\" : { \$gt: $lastProgress}}).sort({\$natural: 1}).limit(1)" --quiet $database | grep -o -P '."time".{0,16}' | head -1 | grep -o '[0-9]*')
+    # LastProgress Time in DB
+    lastProgressInDB1=$(mongo --host $mongoHost --port $mongoPort --eval "db.blocks.find({\"time\" : { \$gt: $lastProgress}}).sort({\$natural: 1}).limit(1)" --quiet $database | grep -o -P '."time".{0,16}' | head -1 | grep -o '[0-9]*')
 
-	if [ -z "$lastProgressInDB1" ]; then
-		setTimeStamp
-      	echo "$setDateStamp No new info on database. We at $ConvertUnixTime. Sleeping..."
-		echo ""
-		exit 0
-	else
-      		echo "" > /dev/null
-	fi
+    if [ -z "$lastProgressInDB1" ]; then
+        setTimeStamp
+        echo "$setDateStamp No new info on database. We at $ConvertUnixTime. Sleeping..."
+        echo ""
+        exit 0
+    else
+            echo "" > /dev/null
+    fi
 
         # Search only < 3 month older activeWallet count;
         searchActiveWltMinus3mos=$(($lastProgressInDB1 - 7776000))
@@ -104,13 +125,12 @@ for (( ; ; ))
                                 echo $addCurlyBracketsEnd >> $formatingFile
                                 sed -i '/^[[:space:]]*$/d' $formatingFile
 
-		ConvertUnixTime=$(date -d @${lastProgressInDB1} +'%Y-%m-%d')
-		stopCountingProcessTime		
-		setTimeStamp
-		runtime=$((end-start))
-		echo "$setDateStamp ActiveWallets: ${result} we at $ConvertUnixTime now. Processing: $runtime ms."
+        ConvertUnixTime=$(date -d @${lastProgressInDB1} +'%Y-%m-%d')
+        stopCountingProcessTime     
+        setTimeStamp
+        runtime=$((end-start))
+        echo "$setDateStamp ActiveWallets: ${result} we at $ConvertUnixTime now. Processing: $runtime ms."
 
                 # Copy JSON to production
                 scp ${formatingFile} root@${websiteHost}:/usr/share/nginx/grepblockcom/apidata/${assetTicker}/${file}
 done
-

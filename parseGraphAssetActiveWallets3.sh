@@ -27,6 +27,14 @@ function stopCountingProcessTime() {
         end=$(($(date +%s%N)/1000000))
 }
 
+function checkLastBlockInDB() {
+    mongo --host $mongoHost --port $mongoPort --eval 'db.blocks.find({}, {block:1, _id:0}).limit(1).sort({$natural: -1}).limit(1);' --quiet $database | grep -o '[0-9]*'
+}
+
+function checkLastBlockInDBtxidProgress() {
+    mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).limit(1).sort({$natural: -1}).limit(1);' --quiet $database | grep -o '[0-9]*'
+}
+
 if [ -s $formatingFile ]; then
 		
         echo ""
@@ -53,6 +61,18 @@ else
         echo $addCurlyBracketsEnd >> $formatingFile
         echo $addBracketsEnd >> $formatingFile
         echo $addCurlyBracketsEnd >> $formatingFile
+fi
+
+# Are we up to date?
+lastBlock=$(checkLastBlockInDB)
+checkLastBlocktxidProgres=$(checkLastBlockInDBtxidProgress)
+diff=$(echo "$lastBlock - $checkLastBlocktxidProgres" | bc)
+
+if [[ $diff -gt 10 ]] || [[ $diff -lt 0 ]]; then
+    echo "We are not up to date with blocks collection! Diff $diff"
+    exit 0
+else 
+    echo "All good" > /dev/null
 fi
 
 for (( ; ; ))
