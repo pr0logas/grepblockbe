@@ -63,11 +63,7 @@ for (( ; ; ))
 		echo "No new data on Database, sleeping..."
 		exit 0
 	else
-			if [ -z "$searchingForPrice" ]; then
-      			searchingForPrice=null
-			else
-      			echo "AllGood" > /dev/null
-			fi
+		
 		setGraphTimeFormat=$(echo "${lastProgressInDB1} * 1000" | bc)
         	sed -i '$ d' $formatingFile
 		echo $addComma >> $formatingFile

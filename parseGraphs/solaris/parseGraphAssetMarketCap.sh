@@ -58,21 +58,16 @@ for (( ; ; ))
 		echo "No new data on Database, sleeping..."
 		exit 0
 	else
-		   if [ -z "$searchingForPrice" ]; then
-                        searchingForPrice=null
-                   else
-                        echo "AllGood" > /dev/null
-                   fi
                    
                 setGraphTimeFormat=$(($lastProgressInDB1 * 1000))
                 sed -i '$ d' $formatingFile
                 echo $addComma >> $formatingFile
                 echo "   [" >> $formatingFile
                 echo "${setGraphTimeFormat}" >> $formatingFile
-		echo $addComma >> $formatingFile
-        	echo "${searchingForPrice}" >> $formatingFile
-		echo "   ]" >> $formatingFile
-		echo "]" >> $formatingFile
+		        echo $addComma >> $formatingFile
+        	    echo "${searchingForPrice}" >> $formatingFile
+		        echo "   ]" >> $formatingFile
+		        echo "]" >> $formatingFile
 		
 		# Copy JSON to production
                 scp ${formatingFile} root@${websiteHost}:/usr/share/nginx/grepblockcom/apidata/${assetTicker}/${file}
