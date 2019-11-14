@@ -73,9 +73,9 @@ for (( ; ; ))
         databaseAlive
 
         startCountingProcessTime1
-        checkLastProgress=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database | jq -r '.lastblock')
+        checkLastProgress=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find({}, {lastblock:1, _id:0}).sort({$natural: -1});' --quiet $database  | grep -o '[0-9]*')
 
-        checkLastProgressIncreased=$(($checkLastProgress+1))
+        checkLastProgressIncreased=$(echo "$checkLastProgress + 1" | bc)
 
         if [[ $checkLastProgressIncreased -eq  $lastBlockInDB ]]; then
             echo "$setDateStamp Processing: no new txids with a block: $checkLastProgressIncreased Sleeping for $blockTime s"
