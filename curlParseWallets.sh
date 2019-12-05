@@ -61,7 +61,7 @@ check=$(mongo --host $mongoHost --port $mongoPort --eval 'db.txidsProgress.find(
 	fi
 
 # Decrease block in MongoDB in case of previuos failure
-mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $tempReduce}});" $database --quiet &> /dev/null
+mongo --host $mongoHost --port $mongoPort --eval "db.txidsProgress.update({\"lastblock\" : $checkLastProgress},{\$set : {\"lastblock\" : $tempReduce}});"d $database --quiet &> /dev/null
 
 lastBlockInDB=$(checkLastBlockInDB)
 
