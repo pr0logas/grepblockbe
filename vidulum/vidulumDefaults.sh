@@ -6,12 +6,12 @@ mongoHost=10.10.100.201
 mongoPort=27017
 
 #
-database=bitcore
-assetTicker="BTX"
-assetName="bitcore"
-genesisBlock=1492995597
-coinGeckoStartUnixTime="1494892800"
-blockTime=150
+database=vidulum
+assetTicker="VDL"
+assetName="vidulum"
+genesisBlock=1540683347
+coinGeckoStartUnixTime="1542412800"
+blockTime=60
 
 # RPC
 rpcconnect=10.10.100.201
@@ -20,4 +20,4 @@ rpcuser=grepblock
 rpcpassword=tothemoon
 
 #
-daemonCli="bitcore-cli"
+daemonCli="vidulum-cli"
